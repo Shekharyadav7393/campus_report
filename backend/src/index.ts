@@ -5,6 +5,8 @@ import { app } from './app.js';
 import { SocketService } from './services/socket.service.js';
 import { logger } from './utils/logger.js';
 
+import { seedDatabase } from './utils/seeder.js';
+
 // Load Env variables
 dotenv.config();
 
@@ -25,8 +27,11 @@ SocketService.init(server);
 // Database Connection
 mongoose
   .connect(MONGODB_URI)
-  .then(() => {
+  .then(async () => {
     logger.info('Successfully connected to MongoDB Cluster.');
+    
+    // Seed default database entities
+    await seedDatabase();
     
     // Start Server Listener
     server.listen(PORT, () => {
